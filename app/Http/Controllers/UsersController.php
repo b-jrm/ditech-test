@@ -9,10 +9,11 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 
 use App\Http\Traits\Msg;
+use App\Http\Traits\Twitter;
 
 class UsersController extends Controller
 {
-    use Msg;
+    use Msg, Twitter;
 
     public function list(){
         try{
@@ -139,15 +140,22 @@ class UsersController extends Controller
     public function modifyAvatar(Request $request, Int $id)
     {
         try{
-            return [ 'function' => __FUNCTION__, 'id' => $id, 'request' => $request->all() ];
+            return [ 'function' => __FUNCTION__, 'id' => $id, 'request' => $request->file() ];
             // if($id){
                 
-            //     $user = User::find($id);
+                // $user = User::find($id);
                 
-            //     if($user)
-            //         return Msg::success("Usuario encontrado",[ $user ]);
-            //     else
-            //         return Msg::warning("No se ha encontrado");
+                // if($user){
+                    // $nameimage = "default.png";
+                    // if($request->hasFile('avatar')){
+                    //     $image = $request->file('avatar');
+                    //     $extension = $image->extension();
+                    //     $nameimage = "user_{$user->id}_avatar.{$extension}";
+                    //     Storage::disk('public')->putFileAs('avatars/',$image,$nameimage);
+                    // }
+                //     return Msg::success("Usuario encontrado",[ $user ]);
+                // }else
+                //     return Msg::warning("No se ha encontrado");
 
             // }else
             //     return Msg::warning("ID Invalido");

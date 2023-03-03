@@ -33,9 +33,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     Route::post('/user/create', [UsersController::class, 'new']);
 
-    Route::patch('/user/{id}/update', [UsersController::class, 'modifyInfo']);
+    Route::post('/user/{id}/update', [UsersController::class, 'modifyInfo']);
 
-    Route::post('/avatar/{id}/update', [UsersController::class, 'modifyAvatar']);
+    Route::patch('/avatar/{id}/update', [UsersController::class, 'modifyAvatar']);
 
     Route::get('/twitter/tweets/{user}', [UsersController::class, 'tweets']);
 
