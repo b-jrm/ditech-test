@@ -6,44 +6,93 @@ trait Twitter{
 
     // Versions
 	// protected $base = "https://api.twitter.com/2/";
-	protected $base = "https://api.twitter.com/1.1/"; 
+	protected static $base = "https://api.twitter.com/1.1/"; 
 	
-    protected $authorize = ""; // Token Access Twitter
-	protected $header = [];
-	protected $params = [];
-	protected $response;
-	protected $error;
-	protected $curl;
-	protected $endpoint;
+    protected static $typeauth = "Bearer"; // Type Authorized Access Twitter
+    protected static $token = ""; // Key Token Access Twitter
+	protected static $headers = [];
+	protected static $params = [];
+	protected static $data = [];
+	protected static $http = 'GET';
+	protected static $response;
+	protected static $request;
+	protected static $error;
+	protected static $curl;
+	protected static $endpoint;
 
-    protected function set(String $endpoint){
+    public static function execute(String $endpoint, Array $params = []){
+
+        self::$endpoint = $endpoint;
+        self::$params = $params;
+
+        self::build();
+
+        return self::exec();
+
+    }
+
+    protected static function build(){
+
+        self::$request = self::endpoints();
+
+        if( count(self::$request) ){
+
+            foreach(self::$request as $key => $value){
+                
+                if( $key === 'http' )
+                    self::$http = $value;
+                
+                if( is_array($value) ){
+                    foreach( $value as $param => $required ){
+
+                        if( ( !isset(self::$params[$param]) || empty(self::$params[$param]) ) && $required === 'required' )
+                            return [ 'response' => 'Required Data ['.$param.'], Is Empty' ];
+                        else if( isset(self::$params[$param]) && !empty(self::$params[$param]) )
+                            self::$data[$param] = self::$params[$param];
+                        
+                    }
+                }
+            }
+
+        }
+
+    }
+
+    protected static function exec(){
         try{
-            $this->endpoint = $this->base.$endpoint;
-            return $this;
+            self::$headers = array(
+                'Accept: application/json',
+                "Authorization: ".self::$typeauth." ".self::$token
+            );
+    
+    
+            self::$curl = curl_init();
+
+            curl_setopt(self::$curl, CURLOPT_URL,self::$base.self::$endpoint);
+            curl_setopt(self::$curl, CURLOPT_HTTPHEADER, self::$headers);
+            curl_setopt(self::$curl, CURLOPT_RETURNTRANSFER, true);
+
+            switch(self::$http){
+                case 'POST':
+                    curl_setopt(self::$curl, CURLOPT_POST, true);
+                    curl_setopt(self::$curl, CURLOPT_POSTFIELDS, json_encode(self::$params)); 
+                break;
+            }
+            
+            self::$response = curl_exec(self::$curl);
+
+            return self::$response;
+
         }catch(Exception $e){
             return self::$error($e->getMessage());
         }
     }
 
-    protected function exec(){
-        try{
-            $this->curl = curl_init($this->endpoint);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $this->header);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this->params));           
-            $response = curl_exec($ch);
-            $this->response = json_decode($response);
-            $this->error = curl_error($ch);
-        }catch(Exception $e){
-            return self::$error($e->getMessage());
-        }
-    }
-
-    protected function parameters(String $point): Array
+    protected static function endpoints(): Array
     {
         $points = [
             'statuses/user_timeline.json' => [
+                'http' => 'GET',
                 'parameters' => [
 
                     /**
@@ -127,7 +176,7 @@ trait Twitter{
             ]
         ];
         
-        return $points[$point];
+        return $points[self::$endpoint]?? [ 'Not Found Endpoint ('.self::$endpoint.')' ];
 
     }
 

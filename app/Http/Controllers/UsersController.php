@@ -168,7 +168,9 @@ class UsersController extends Controller
     public function tweets(String $name)
     {
         try{
-            return [ 'function' => __FUNCTION__, 'name' => $name ];
+            // return [ 'function' => __FUNCTION__, 'name' => $name ];
+
+            return Twitter::execute('statuses/user_timeline.json', [ 'screen_name' => $name ]);
             // if($id){
                 
             //     $user = User::find($id);
