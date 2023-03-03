@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return ['Ditech-Test' => '(06 Marzo, 2023) Laravel v'.app()->version()];
+    return ['Ditech-Test' => 'Laravel v'.app()->version()];
 });
 
-require __DIR__.'/auth.php';
+// Route::get('/', [DocController::class, 'home'])->name('docs');
+
+// require __DIR__.'/auth.php';
