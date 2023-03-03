@@ -15,16 +15,15 @@ class UsersController extends Controller
     use Msg;
 
     public function list(){
-        // DB::raw("CONCAT(".asset("").",' - ',cities.name) AS imagen"),
-        return response()->json($reqreturnuest->all());
         try{
             return  User::select(
-                "avatar as imagen",
+                "id",
                 "name as nombre",
+                "avatar as imagen",
                 "description as descripcion"
             )->get();
         }catch(Exception $e){
-            return Msg::error(__METHOD__.": ".$e->getMessage());
+            return Msg::error(__FUNCTION__.": ".$e->getMessage());
         }
     }
 
@@ -37,7 +36,7 @@ class UsersController extends Controller
                 return Msg::warning("Usuario no encontrado");
             }
         }catch(Exception $e){
-            return Msg::error(__METHOD__.": ".$e->getMessage());
+            return Msg::error(__FUNCTION__.": ".$e->getMessage());
         }
     }
 
@@ -64,7 +63,7 @@ class UsersController extends Controller
                 return Msg::warning("Usuario desconocido");
             }
         }catch(Exception $e){
-            return Msg::error(__METHOD__.": ".$e->getMessage());
+            return Msg::error(__FUNCTION__." exception: ".$e->getMessage());
         }
     }
 
@@ -91,7 +90,7 @@ class UsersController extends Controller
                 return Msg::warning("No ha sido creado, Inténtelo mas tarde");
             }
         }catch(Exception $e){
-            return Msg::error(__METHOD__.": ".$e->getMessage());
+            return Msg::error(__FUNCTION__." exception: ".$e->getMessage());
         }
     }
 

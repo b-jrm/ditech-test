@@ -20,7 +20,7 @@ class AuthenticateController extends Controller
     {
 
         $ready = User::where('email',$request->email)->orWhere('name',$request->name)->exists();
-        
+
         if( $ready ){
             return Msg::warning("Ya existe un usuario ({$request->email}) o ({$request->name})");
         }else{
@@ -61,8 +61,11 @@ class AuthenticateController extends Controller
 
     public function logout(Request $request)
     {
-        auth()->user()->tokens()->delete();
-        return Msg::success("Succesfully ".auth()->user()->name."!, Session Finally");
+        if( !empty(auth()) ){
+            auth()->user()->tokens()->delete();
+            return Msg::success("Succesfully ".auth()->user()->name."!, Session Finally");
+        }else
+            return Msg::warning("Session no encontrada!");
     }
 
 }
