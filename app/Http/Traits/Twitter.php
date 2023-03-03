@@ -75,7 +75,7 @@ trait Twitter{
             switch(self::$http){
                 case 'POST':
                     curl_setopt(self::$curl, CURLOPT_POST, true);
-                    curl_setopt(self::$curl, CURLOPT_POSTFIELDS, json_encode(self::$params)); 
+                    curl_setopt(self::$curl, CURLOPT_POSTFIELDS, json_encode(self::$data)); 
                 break;
             }
             
