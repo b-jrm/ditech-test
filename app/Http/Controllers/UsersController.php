@@ -31,7 +31,7 @@ class UsersController extends Controller
     {
         try{
             if( !empty($request->user()) ){
-                return [ 'response' => Msg::success("Mi Información"), 'data' => $request->user() ];
+                return Msg::warning("Usuario no encontrado",[ 'response' => Msg::success("Mi Información"), 'data' => $request->user() ]);
             }else{
                 return Msg::warning("Usuario no encontrado");
             }
@@ -94,8 +94,88 @@ class UsersController extends Controller
         }
     }
 
-    public function byId(Request $request){
-        return $request->all();
+    public function byId(Int $id)
+    {
+        try{
+
+            if($id){
+                
+                $user = User::find($id);
+                
+                if($user)
+                    return Msg::success("Usuario encontrado",[ $user ]);
+                else
+                    return Msg::warning("No se ha encontrado");
+
+            }else
+                return Msg::warning("ID Invalido");
+
+        }catch(Exception $e){
+            return Msg::error(__FUNCTION__." exception: ".$e->getMessage());
+        }
     }
+
+    public function modifyInfo(Request $request, Int $id)
+    {
+        try{
+            return [ 'function' => __FUNCTION__, 'id' => $id, 'request' => $request->all() ];
+            // if($id){
+                
+            //     $user = User::find($id);
+                
+            //     if($user)
+            //         return Msg::success("Usuario encontrado",[ $user ]);
+            //     else
+            //         return Msg::warning("No se ha encontrado");
+
+            // }else
+            //     return Msg::warning("ID Invalido");
+
+        }catch(Exception $e){
+            return Msg::error(__FUNCTION__." exception: ".$e->getMessage());
+        }
+    }
+
+    public function modifyAvatar(Request $request, Int $id)
+    {
+        try{
+            return [ 'function' => __FUNCTION__, 'id' => $id, 'request' => $request->all() ];
+            // if($id){
+                
+            //     $user = User::find($id);
+                
+            //     if($user)
+            //         return Msg::success("Usuario encontrado",[ $user ]);
+            //     else
+            //         return Msg::warning("No se ha encontrado");
+
+            // }else
+            //     return Msg::warning("ID Invalido");
+
+        }catch(Exception $e){
+            return Msg::error(__FUNCTION__." exception: ".$e->getMessage());
+        }
+    }
+
+    public function tweets(String $name)
+    {
+        try{
+            return [ 'function' => __FUNCTION__, 'name' => $name ];
+            // if($id){
+                
+            //     $user = User::find($id);
+                
+            //     if($user)
+            //         return Msg::success("Usuario encontrado",[ $user ]);
+            //     else
+            //         return Msg::warning("No se ha encontrado");
+
+            // }else
+            //     return Msg::warning("ID Invalido");
+
+        }catch(Exception $e){
+            return Msg::error(__FUNCTION__." exception: ".$e->getMessage());
+        }
+    }    
 
 }

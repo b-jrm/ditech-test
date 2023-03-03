@@ -12,8 +12,11 @@ use App\Http\Controllers\AuthenticateController;
 */
 
 Route::middleware('guest')->group(function(){
+
     Route::post('/register', [AuthenticateController::class, 'register']);
+
     Route::post('/login', [AuthenticateController::class, 'login']);
+
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -21,11 +24,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthenticateController::class, 'logout']);
 
     Route::get('/me', [UsersController::class, 'seeMe']);
+
     Route::post('/me', [UsersController::class, 'storeMe']);
+
     Route::get('/user/{id}', [UsersController::class, 'byId']);
+
     Route::get('/users', [UsersController::class, 'list']);
     
-    Route::post('/create/user', [UsersController::class, 'new']);
+    Route::post('/user/create', [UsersController::class, 'new']);
+
+    Route::patch('/user/{id}/update', [UsersController::class, 'modifyInfo']);
+
+    Route::post('/avatar/{id}/update', [UsersController::class, 'modifyAvatar']);
+
+    Route::get('/twitter/tweets/{user}', [UsersController::class, 'tweets']);
 
 });
 

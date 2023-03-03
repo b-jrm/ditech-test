@@ -43,4 +43,20 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $maps = [
+        'name' => 'nombre',
+        'email' => 'correo',
+        'avatar' => 'imagen',
+        'description' => 'descripcion',
+        'password' => 'contraseña',
+    ];
+
+    protected $append = [
+        'nombre',
+        'correo',
+        'imagen',
+        'descripcion',
+        'contraseña',
+    ];
 }

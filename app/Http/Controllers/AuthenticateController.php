@@ -49,7 +49,8 @@ class AuthenticateController extends Controller
     public function login(Request $request)
     {
         if ( !Auth::attempt($request->only('email', 'password')) ) {
-            return response()->json( [ "response" => "Not authorized" ], 401 );
+            // return response()->json( [ "response" => "Not authorized" ], 401 );
+            return Msg::warning("Credenciales incorrectas", [], 401);
         }
 
         $user = User::where('email',$request->email)->firstOrFail();
@@ -59,7 +60,7 @@ class AuthenticateController extends Controller
         return response()->json( ["response" => "Welcome!, {$user->name}", "access" => [ "type" => 'Bearer', "token" => $token ] ] );
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
         if( !empty(auth()) ){
             auth()->user()->tokens()->delete();
