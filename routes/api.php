@@ -45,7 +45,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::patch('/avatar/{id}/update', [UsersController::class, 'modifyAvatar']);
     
-    Route::get('/tweets/byuserid/{user_id}', [UsersController::class, 'tweetsByIdUser']);
+    Route::get('/tweets/{user_id}', [UsersController::class, 'tweetsByIdUser']);
 
 });
 

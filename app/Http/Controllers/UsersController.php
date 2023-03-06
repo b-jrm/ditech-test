@@ -35,6 +35,28 @@ class UsersController extends Controller
         }
     }
 
+    public function byId(Int $id)
+    {
+        try{
+
+            if($id){
+                
+                $user = User::find($id);
+                
+                if($user){
+                    $user->avatar = "{$this->baseImage}/{$user->avatar}";
+                    return Msg::success("Usuario encontrado",[ $user ]);
+                }else
+                    return Msg::warning("No se ha encontrado ningun usuario con el ID {$id}");
+
+            }else
+                return Msg::warning("ID Invalido");
+
+        }catch(Exception $e){
+            return Msg::error(__FUNCTION__." exception: ".$e->getMessage());
+        }
+    }
+
     public function seeMe(Request $request)
     {
         try{
@@ -72,27 +94,6 @@ class UsersController extends Controller
             }else
                 return Msg::warning("Usuario desconocido");
             
-        }catch(Exception $e){
-            return Msg::error(__FUNCTION__." exception: ".$e->getMessage());
-        }
-    }
-
-    public function byId(Int $id)
-    {
-        try{
-
-            if($id){
-                
-                $user = User::find($id);
-                
-                if($user)
-                    return Msg::success("Usuario encontrado",[ $user ]);
-                else
-                    return Msg::warning("No se ha encontrado");
-
-            }else
-                return Msg::warning("ID Invalido");
-
         }catch(Exception $e){
             return Msg::error(__FUNCTION__." exception: ".$e->getMessage());
         }
@@ -159,7 +160,6 @@ class UsersController extends Controller
     public function modifyAvatar(Request $request, Int $id)
     {
         try{
-            // return [ 'function' => __FUNCTION__, 'id' => $id, 'request' => $request->file('avatar'), "routeImage" => $this->baseImage ];
             if($id){
                 
                 $user = User::find($id);
@@ -187,13 +187,28 @@ class UsersController extends Controller
         }catch(Exception $e){
             return Msg::error(__FUNCTION__." exception: ".$e->getMessage());
         }
+    } 
+
+    public function tweetsByIdUser($user_id)
+    {
+        try{
+
+            if( $user_id > 0 && !is_numeric(strpos($user_id,'{'))  )
+                return Twitter::execute('users/:id/tweets', [ 'max_results' => 10 ], [ ':id' => $user_id ]);
+            else
+                return Msg::warning("ID Invalido, Debe ser numerico");
+
+        }catch(Exception $e){
+            return Msg::error(__FUNCTION__." exception: ".$e->getMessage());
+        }
     }
 
+    // Testing Twitter
     public function tweetsByName($name)
     {
         try{
 
-            if( strlen($name) > 0 && ! is_numeric(strpos($name,'{'))  )
+            if( strlen($name) > 0 && !is_numeric(strpos($name,'{'))  )
                 return Twitter::execute('statuses/user_timeline.json', [ 'screen_name' => $name, 'max_results' => 10 ]);
             else
                 return Msg::warning("Nombre Invalido");
@@ -207,7 +222,7 @@ class UsersController extends Controller
     {
         try{
             
-            if( $id > 0 && ! is_numeric(strpos($id,'{'))  )
+            if( $id > 0 && !is_numeric(strpos($id,'{'))  )
                 return Twitter::execute('lists/:id/tweets', [ 'max_results' => 10 ], [ ':id' => $id ]);
             else
                 return Msg::warning("ID Invalido, Debe ser numerico");
@@ -216,20 +231,6 @@ class UsersController extends Controller
         }catch(Exception $e){
             return Msg::error(__FUNCTION__." exception: ".$e->getMessage());
         }
-    }    
-
-    public function tweetsByIdUser($user_id)
-    {
-        try{
-
-            if( strlen($user_id) > 0 && ! is_numeric(strpos($user_id,'{'))  )
-                return Twitter::execute('users/:id/tweets', [ 'max_results' => 10 ], [ ':id' => $user_id ]);
-            else
-                return Msg::warning("ID Invalido, Debe ser numerico");
-
-        }catch(Exception $e){
-            return Msg::error(__FUNCTION__." exception: ".$e->getMessage());
-        }
-    } 
+    }   
 
 }

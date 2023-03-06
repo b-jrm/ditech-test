@@ -64,7 +64,7 @@ class AuthenticateController extends Controller
     {
         if( !empty(auth()) ){
             auth()->user()->tokens()->delete();
-            return Msg::success("Succesfully ".auth()->user()->name."!, Session Finally");
+            return Msg::success(auth()->user()->name."!, Session Finally");
         }else
             return Msg::warning("Session no encontrada!");
     }
