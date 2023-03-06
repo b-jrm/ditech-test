@@ -1,8 +1,11 @@
-<p align="center">
-Ditech-Test
+## Ditech-Test
 
+<p align="right">
+<br>
 Brayan Julian Rodriguez Moreno
+<br>
 Bogotá - Colombia
+<br>
 Developer PHP
 </p>
 
@@ -20,7 +23,7 @@ Developer PHP
 
 1.	Descargue el repositorio https://github.com/b-jrm/ditech-test/
 
-2.	En la raíz de la carpeta ubique el archivo .env.example y cámbiele el nombre por .env 
+2.	En la raíz de la carpeta ubique el archivo *.env.example* y cámbiele el nombre por *.env* 
 
 3.	Cree la base de datos en su gestor local con el nombre ditech-test con la collation utf8mb4_unicode_ci preferiblemente
 
