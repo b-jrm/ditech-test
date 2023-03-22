@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\AuthenticateController;
 
+use App\Http\Controllers\ApiController;
+
+use App\Http\Api\RickAndMorty;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -25,7 +29,9 @@ Route::middleware('guest')->group(function(){
 
 });
 
-Route::get('/avatar/{id}/update', [UsersController::class, 'modifyAvatar']);
+/**
+ * Twitter
+ */
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
@@ -46,6 +52,22 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::patch('/avatar/{id}/update', [UsersController::class, 'modifyAvatar']);
     
     Route::get('/tweets/{user_id}', [UsersController::class, 'tweetsByIdUser']);
+
+});
+
+/**
+ * Rick And Morty API
+ */
+
+Route::middleware(['auth:sanctum'])->prefix('rickandmorty')->group(function () {
+
+    Route::get('/', [RickAndMorty::class, 'default']);
+
+    Route::get('/character/{ids?}', [RickAndMorty::class, 'character']);
+
+    Route::get('/location/{ids?}', [RickAndMorty::class, 'location']);
+
+    Route::get('/episode/{ids?}', [RickAndMorty::class, 'episode']);
 
 });
 
