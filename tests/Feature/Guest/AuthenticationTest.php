@@ -10,7 +10,7 @@ test('Usuario puede hacer login y obtener su token', function () {
         'password' => 'password',
     ]);
 
-    $response->assertStatus(200); // ->assertJson([ 'reponse' => "" ]);
+    $response->assertStatus(200);
 
     $this->assertTrue( ( is_numeric(strpos($response['response'],'Welcome')) && strlen($response['access']['token']) > 0 ) );
 });
