@@ -1,7 +1,7 @@
 <?php
 
 test('new users can register', function () {
-    $response = $this->post('/register', [
+    $response = $this->postJson('/api/register', [
         'name' => 'Test User',
         'email' => 'test@example.com',
         'password' => 'password',
@@ -9,5 +9,14 @@ test('new users can register', function () {
     ]);
 
     $this->assertAuthenticated();
+
     $response->assertNoContent();
+
+    $response->assertStatus(200); // ->assertJson([ 'reponse' => "" ]);
+
+    $this->assertTrue( ( is_numeric(strpos($response['type'],'success')) && strlen($response['response']['access']['token']) > 0 ) );
+
+
+
+
 });

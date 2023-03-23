@@ -48,10 +48,8 @@ class AuthenticateController extends Controller
 
     public function login(Request $request)
     {
-        if ( !Auth::attempt($request->only('email', 'password')) ) {
-            // return response()->json( [ "response" => "Not authorized" ], 401 );
+        if ( !Auth::attempt($request->only('email', 'password')) )
             return Msg::warning("Credenciales incorrectas", [], 401);
-        }
 
         $user = User::where('email',$request->email)->firstOrFail();
 
