@@ -36,6 +36,8 @@ test('Usuario no puede acceder a la informacion con tokens invalidos', function 
         'Authorization' => 'Bearer '.Str::random(42),
     ])->postJson('/api/me');
 
+    $response->assertStatus(401);
+
     $this->assertTrue( ( is_numeric(strpos($response['message'],'Unauthenticated')) ) );
 
 });

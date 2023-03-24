@@ -27,7 +27,8 @@ class UsersController extends Controller
             return  User::select(
                 "id",
                 "name as nombre",
-                DB::raw("CONCAT('{$this->baseImage}/',avatar) AS imagen"),
+                // DB::raw("CONCAT('{$this->baseImage}/',avatar) AS imagen"),
+                DB::raw("IF( SUBSTR(avatar,0,3) = 'http' , avatar, CONCAT('{$this->baseImage}/',avatar) ) AS imagen"),
                 "description as descripcion"
             )->get();
         }catch(Exception $e){
@@ -44,7 +45,8 @@ class UsersController extends Controller
                 $user = User::find($id);
                 
                 if($user){
-                    $user->avatar = "{$this->baseImage}/{$user->avatar}";
+                    // $user->avatar = "{$this->baseImage}/{$user->avatar}";
+                    $user->avatar = ( (is_numeric(strpos($user->avatar,'http'))) ? $user->avatar : "{$this->baseImage}/{$user->avatar}");
                     return Msg::success("Usuario encontrado",[ $user ]);
                 }else
                     return Msg::warning("No se ha encontrado ningun usuario con el ID {$id}");
@@ -62,7 +64,8 @@ class UsersController extends Controller
         try{
             // return $request->user()->id;
             if( !empty($request->user()) ){
-                $request->user()->avatar = "{$this->baseImage}/{$request->user()->avatar}";
+                // $request->user()->avatar = "{$this->baseImage}/{$request->user()->avatar}";
+                $request->user()->avatar = ( (is_numeric(strpos($request->user()->avatar,'http'))) ? $request->user()->avatar : "{$this->baseImage}/{$request->user()->avatar}");
                 return Msg::success("Mi información", [ 'user' => $request->user() ] );
             }else{
                 return Msg::warning("Usuario no encontrado");
