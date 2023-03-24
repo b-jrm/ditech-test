@@ -1,7 +1,9 @@
 <?php
 
 test('Usuario puede registrarse y obtener su token', function () {
-    $response = $this->postJson('/api/register', [
+    $response = $this->withHeaders([
+        'Accept' => 'application/json',
+    ])->postJson('/api/register', [
         'name' => 'Test User',
         'email' => 'test@example.com',
         'password' => 'password',
@@ -15,7 +17,9 @@ test('Usuario puede registrarse y obtener su token', function () {
 });
 
 test('Usuario no puede registrarse con informacion incompleta', function () {
-    $response = $this->postJson('/api/register', [
+    $response = $this->withHeaders([
+        'Accept' => 'application/json',
+    ])->postJson('/api/register', [
         'name' => '',
         'email' => null,
         'password' => 'password',

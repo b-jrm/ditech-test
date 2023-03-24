@@ -5,7 +5,9 @@ use App\Models\User;
 test('Usuario puede hacer login y obtener su token', function () {
     $user = User::factory()->create();
     
-    $response = $this->postJson('/api/login', [
+    $response = $this->withHeaders([
+        'Accept' => 'application/json',
+    ])->postJson('/api/login', [
         'email' => $user->email,
         'password' => 'password',
     ]);
@@ -18,7 +20,9 @@ test('Usuario puede hacer login y obtener su token', function () {
 test('Usuario no puede autenticar con credenciales incorrectas', function () {
     $user = User::factory()->create();
 
-    $response = $this->postJson('/api/login', [
+    $response = $this->withHeaders([
+        'Accept' => 'application/json',
+    ])->postJson('/api/login', [
         'email' => $user->email,
         'password' => 'wrong-password',
     ]);
