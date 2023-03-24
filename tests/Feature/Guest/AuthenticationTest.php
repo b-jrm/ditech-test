@@ -1,33 +1,50 @@
 <?php
 
+namespace Tests\Feature\Auth;
+
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Crypt;
+use Tests\TestCase;
+
 use App\Models\User;
 
-test('Usuario puede hacer login y obtener su token', function () {
-    $user = User::factory()->create();
+class AuthenticationTest extends TestCase
+{
+
+    public function test_usuario_puede_hacer_login_y_obtener_su_token(): void
+    {
+        $user = USer::factory()->create([
+            'password' => bcrypt($password = 'pass_testing'),
+        ]);
+        
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+        ])->postJson('/api/login', [
+            'email' => $user->email,
+            'password' => $password,
+        ]);
     
-    $response = $this->withHeaders([
-        'Accept' => 'application/json',
-    ])->postJson('/api/login', [
-        'email' => $user->email,
-        'password' => 'password',
-    ]);
+        $response->assertStatus(200);
+    
+        $this->assertTrue( ( is_numeric(strpos($response['response'],'Welcome')) && strlen($response['access']['token']) > 0 ) );
+    }
 
-    $response->assertStatus(200);
+    public function test_usuario_autenticado_no_puede_autenticar_con_credenciales_incorrectas(): void
+    {
+        $user = User::inRandomOrder()->first();
 
-    $this->assertTrue( ( is_numeric(strpos($response['response'],'Welcome')) && strlen($response['access']['token']) > 0 ) );
-});
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+        ])->postJson('/api/login', [
+            'email' => $user->email,
+            'password' => 'wrong-password',
+        ]);
 
-test('Usuario no puede autenticar con credenciales incorrectas', function () {
-    $user = User::factory()->create();
+        $this->assertTrue( ($response['message'] === 'Credenciales incorrectas') );
 
-    $response = $this->withHeaders([
-        'Accept' => 'application/json',
-    ])->postJson('/api/login', [
-        'email' => $user->email,
-        'password' => 'wrong-password',
-    ]);
+        $this->assertGuest();
+    }
 
-    $this->assertTrue( ($response['message'] === 'Credenciales incorrectas') );
-
-    $this->assertGuest();
-});
+}

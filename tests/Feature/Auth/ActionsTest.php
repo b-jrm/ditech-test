@@ -9,14 +9,10 @@ use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 use App\Models\User;
-use App\Models\Token;
 
 class ActionsTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-
+    
     public function test_usuario_autenticado_puede_ver_su_información(): void
     {
         $user = User::inRandomOrder()->first();
@@ -179,7 +175,6 @@ class ActionsTest extends TestCase
         if( !is_null($token) && strlen($token) > 0 ){
 
             Storage::fake('public');
-            $avatar = UploadedFile::fake()->create('avatar.jpg');
 
             // dd($avatar);
 
@@ -187,13 +182,13 @@ class ActionsTest extends TestCase
                 'Accept' => 'application/json',
                 'Authorization' => 'Bearer '.$token,
             ])->postJson('/api/user/'.rand(1,20).'/update',[
-                'avatar' => $avatar,
-                'description' => "now uploaded avatar",
+                'avatar' => $avatar = UploadedFile::fake()->create('avatar.jpg'),
+                'description' => "Now upload Photo",
             ])->assertStatus(200);
 
             Storage::disk('public')->assertExists($avatar->hashName());
 
-            $this->assertTrue( ( is_numeric(strpos($response['type'],'success')) || is_numeric(strpos($response['type'],'warning')) ) );
+            Storage::disk('public')->assertMissing('default.png');
             
         }else $this->assertTrue( false );
     }

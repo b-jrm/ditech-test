@@ -1,43 +1,49 @@
 <?php
 
-use App\Models\User;
+namespace Tests\Feature\Auth;
+
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Tests\TestCase;
 
-test('Usuario puede borrar sus tokens de acceso', function () {
-    
-    $user = User::factory()->create();
-    
-    $response = $this->withHeaders([
-        'Accept' => 'application/json',
-    ])->postJson('/api/login', [
-        'email' => $user->email,
-        'password' => 'password',
-    ]);
+use App\Models\User;
 
-    if( is_numeric(strpos($response['response'],'Welcome')) && strlen($response['access']['token']) > 0 ){
+class LogoutTest extends TestCase
+{
+    public function test_usuario_autenticado_puede_borrar_sus_tokens_de_acceso(): void
+    {
+        $user = User::inRandomOrder()->first();
+        
+        $user->tokens()->delete();
 
+        $token = $user->createToken('authenticated')->plainTextToken;
+
+        if( !is_null($token) && strlen($token) > 0 ){
+
+            $response = $this->withHeaders([
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer '.$token,
+            ])->postJson('/api/logout');
+        
+            $response->assertStatus(200);
+
+            $this->assertTrue( (isset($response['type']) && is_numeric(strpos($response['type'],'success'))) );
+
+        }else $this->assertTrue( false );
+    }
+
+    public function test_usuario_autenticado_no_puede_acceder_a_la_informacion_con_tokens_invalidos(): void
+    {
         $response = $this->withHeaders([
             'Accept' => 'application/json',
-            'Authorization' => $response['access']['type'].' '.$response['access']['token'],
-        ])->postJson('/api/logout');
+            'Authorization' => 'Bearer '.Str::random(42),
+        ])->postJson('/api/me');
     
-        $response->assertStatus(200);
-
-        $this->assertTrue( ( is_numeric(strpos($response['type'],'success')) && is_numeric(strpos($response['message'],'Session Finally')) ) );
-
-    }else $this->assertTrue( false );
-
-});
-
-test('Usuario no puede acceder a la informacion con tokens invalidos', function () {
+        $response->assertStatus(401);
     
-    $response = $this->withHeaders([
-        'Accept' => 'application/json',
-        'Authorization' => 'Bearer '.Str::random(42),
-    ])->postJson('/api/me');
+        $this->assertTrue( ( is_numeric(strpos($response['message'],'Unauthenticated')) ) );
+    }
 
-    $response->assertStatus(401);
-
-    $this->assertTrue( ( is_numeric(strpos($response['message'],'Unauthenticated')) ) );
-
-});
+}
