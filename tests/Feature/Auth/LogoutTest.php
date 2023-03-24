@@ -14,11 +14,8 @@ test('Usuario puede borrar sus tokens de acceso', function () {
         'password' => 'password',
     ]);
 
-    // $response->dd();
-
     if( is_numeric(strpos($response['response'],'Welcome')) && strlen($response['access']['token']) > 0 ){
 
-        // Logout
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => $response['access']['type'].' '.$response['access']['token'],
